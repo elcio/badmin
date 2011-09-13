@@ -42,7 +42,11 @@ function gopage(n){
     {{for c in columns:}}
       <td><a href="{{=URL(f='edit',args=[table,d.id])}}">
       {{if db[table][c].type.startswith('reference '):}}
+        {{try:}}
         {{=(db[table][c].requires.label % d[c])}}
+        {{except:}}
+        {{=d[c]}}
+        {{pass}}
       {{elif db[table][c].type=='boolean':}}
         {{=d[c] and T('Yes') or T('No')}}
       {{elif d[c]==None:}}
