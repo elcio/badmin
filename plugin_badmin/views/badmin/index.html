@@ -40,7 +40,17 @@ function gopage(n){
    {{count+=1}}
    <td>{{=count}}</td>
     {{for c in columns:}}
-      <td><a href="{{=URL(f='edit',args=[table,d.id])}}">{{=d[c]}}</a></td>
+      <td><a href="{{=URL(f='edit',args=[table,d.id])}}">
+      {{if db[table][c].type.startswith('reference '):}}
+        {{=(db[table][c].requires.label % d[c])}}
+      {{elif db[table][c].type=='boolean':}}
+        {{=d[c] and T('Yes') or T('No')}}
+      {{elif d[c]==None:}}
+        {{=T('<null>')}}
+      {{else:}}
+        {{=d[c]}}
+      {{pass}}
+      </a></td>
     {{pass}}
  </tr> 
 {{pass}}
