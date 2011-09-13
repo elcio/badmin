@@ -43,27 +43,27 @@ You can also customize the menus, classifing tables. For doing this, include a n
       'auth_user':{
         'columns':['authorized','name','email','city','weekhours','workinplace','meetings'],
         'filters':['authorized','name','email','city','weekhours','workinplace','meetings'],
-        *'category':'main',*
+        'category':'main',
       },
       'job':{
         'columns':['project','name','time','start','open'],
         'filters':['name','time','open'],
-        *'category':'project',*
+        'category':'project',
       },
       'project':{
         'columns':['name',],
         'filters':['name'],
-        *'category':'project',*
+        'category':'project',
       },
       'page':{
         'columns':['title','slug','description','ordernum',],
         'filters':['title'],
-        *'category':'main',*
+        'category':'main',
       },
       'jobquestion':{
         'columns':['user','job','question','answer'],
         'filters':['question'],
-        *'category':'main',*
+        'category':'main',
       },
     }
 
