@@ -4,7 +4,11 @@ Badmin is an automatic admin interface for Web2py, built over Twitter Bootstrap.
 
 ## Setup
 
-In order to have Badmin working, you must add a column to your Auth User table, called administrator, boolean. Sorry for this, it will be fixed soon using web2py permissions schema. Add the column, install the plugin, logout and login, so access /yourapp/badmin/.
+* simply install badmin on your app
+* create an auth_group called "badmin"
+* add membership on this group to the desired users
+* logout and login again
+* access http://127.0.0.1:8000/yourapp/badmin
 
 ## Custom lists
 

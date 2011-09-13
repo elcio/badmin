@@ -1,12 +1,5 @@
 import math
 
-def is_admin(f):
-  def runadmin():
-    if auth.user.admin:
-      return f()
-    return redirect('/')
-  return runadmin
-
 if not 'badmin_tables' in globals():
   badmin_tables={}
 
@@ -55,7 +48,7 @@ def mkfilter(table,column):
         _name=column,_id=column),_class='input'),
       _class='clearfix')
 
-@is_admin
+@auth.requires_membership('badmin')
 def index():
   tables=badmin_tables
   if not request.args:
@@ -111,7 +104,7 @@ def index():
     )
   return locals()
 
-@is_admin
+@auth.requires_membership('badmin')
 def edit():
   tables=badmin_tables
   table=request.args[0]
