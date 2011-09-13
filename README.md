@@ -6,8 +6,7 @@ Badmin is an automatic admin interface for Web2py, built over Twitter Bootstrap.
 
 * simply install badmin on your app
 * create an auth_group called "badmin"
-* add membership on this group to the desired users
-* logout and login again
+* add membership on this group to the desired users (including you)
 * access http://127.0.0.1:8000/yourapp/badmin
 
 ## Custom lists
