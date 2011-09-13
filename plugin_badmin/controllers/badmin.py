@@ -119,7 +119,7 @@ def edit():
     id=request.args[1]
   else:
     id=None
-  f=SQLFORM(db[table],id)
+  f=SQLFORM(db[table],id,submit_button=T('Save'))
   if f.accepts(request.vars,session,keepvalues=True):
     session.flash='%s saved' % table
     return redirect(URL(f='index',args=[table]))
