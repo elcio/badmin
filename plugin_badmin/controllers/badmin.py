@@ -50,16 +50,28 @@ def mkfilter(table,column):
 
 @auth.requires_membership('badmin')
 def index():
+
   tables=badmin_tables
   if not request.args:
     return redirect(URL(f='index',args=tables.keys()[0]))
+
   page=1
   if 'page' in request.vars:
     page=int(request.vars.page)
+
   table=request.args[0]
   columns=tables[table]['columns']
   dbtable=db[table]
+
+  if 'delid' in request.vars:
+    d=request.vars.delid
+    if not isinstance(d,list):
+      d=[d]
+    db(dbtable.id.belongs(d)).delete()
+    response.flash=T("Deleted successfully!")
+
   q=dbtable.id>0
+
   for f in tables[table]['filters']:
     if dbtable[f].type=='string':
       if f in request.vars and request.vars[f]:
@@ -78,8 +90,10 @@ def index():
   o='id'
   if 'orderby' in request.vars:
     o=request.vars.orderby
+
   data=db(q).select(*([dbtable.id]+[dbtable[f] for f in columns]),orderby=o,limitby=((page-1)*50,page*50))
   pages=int(math.ceil(db(q).count()/50.0))
+
   if tables[table]['filters']:
     filters=FORM(
       FIELDSET(
