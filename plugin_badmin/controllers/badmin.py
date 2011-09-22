@@ -1,8 +1,11 @@
+# -*- encoding: utf-8 -*- 
+'''Badmin controllers'''
+
 import math
 
+### Default table data ###
 if not 'badmin_tables' in globals():
   badmin_tables={}
-
 if not 'badmin_exclude_tables' in globals():
   badmin_exclude_tables=[]
 
@@ -15,6 +18,7 @@ for table in db.keys():
           'filters':[],
         }
 
+### Divide tables in categories ###
 for table,data in badmin_tables.iteritems():
   if not 'category' in data:
     if '_' in table:
@@ -23,11 +27,14 @@ for table,data in badmin_tables.iteritems():
       data['category']='othertables'
 
 def mkfilter(table,column):
+  '''Build filter HTML elements for the given column'''
+
   if table[column].type=='string' or table[column].type=='text':
     return DIV(
       LABEL('%s: ' % table[column].label,_for=column),
       DIV(INPUT(_name=column,_id=column,_class='xxlarge'),_class='input'),
     _class='clearfix')
+
   if table[column].type=='integer':
     return DIV(
         LABEL('%s:' % table[column].label),
@@ -38,6 +45,7 @@ def mkfilter(table,column):
           INPUT(_name='to_'+column,_class='integer')
         ,_class='input')
       ,_class='clearfix')
+
   if table[column].type=='boolean':
     return DIV(
         LABEL('%s: ' % table[column].label,_for=column),
@@ -50,6 +58,7 @@ def mkfilter(table,column):
 
 @auth.requires_membership('badmin')
 def index():
+  '''List table'''
 
   tables=badmin_tables
   if not request.args:
@@ -116,10 +125,12 @@ def index():
       INPUT(_type='hidden',_name='page',_id='page',_value=page),
       _method='GET',_id='filter'
     )
+
   return locals()
 
 @auth.requires_membership('badmin')
 def edit():
+  '''Add/edit register'''
   tables=badmin_tables
   table=request.args[0]
   if request.args[1:]:
