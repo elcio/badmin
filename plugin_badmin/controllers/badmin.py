@@ -56,6 +56,10 @@ def mkfilter(table,column):
         _name=column,_id=column),_class='input'),
       _class='clearfix')
 
+def deleteRecords(dbtable,d):
+  db(dbtable.id.belongs(d)).delete()
+  return T("Deleted successfully!")
+
 @auth.requires_membership('badmin')
 def index():
   '''List table'''
@@ -71,13 +75,16 @@ def index():
   table=request.args[0]
   columns=tables[table]['columns']
   dbtable=db[table]
+  actions='actions' in tables[table] and tables[table]['actions'] or []
+  actions.append((str(T('delete')),deleteRecords,'danger',T('Are you shure?')))
 
-  if 'delid' in request.vars:
-    d=request.vars.delid
+  if 'rid' in request.vars:
+    d=request.vars.rid
     if not isinstance(d,list):
       d=[d]
-    db(dbtable.id.belongs(d)).delete()
-    response.flash=T("Deleted successfully!")
+    for a in actions:
+      if a[0]==request.vars.action:
+        response.flash=a[1](dbtable,d)
 
   q=dbtable.id>0
 
@@ -133,14 +140,24 @@ def edit():
   '''Add/edit register'''
   tables=badmin_tables
   table=request.args[0]
+
   if request.args[1:]:
     id=request.args[1]
+    actions='actions' in tables[table] and tables[table]['actions'] or []
+    if 'action' in request.vars:
+      for a in actions:
+        if a[0]==request.vars.action:
+          session.flash=a[1](db[table],[request.args[1]])
+          return redirect(URL(f='index',args=[table]))
   else:
     id=None
+    actions=[]
+
   f=SQLFORM(db[table],id,submit_button=T('Save'))
   if f.accepts(request.vars,session,keepvalues=True):
     session.flash='%s saved' % table
     return redirect(URL(f='index',args=[table]))
+
   return locals()
 
 

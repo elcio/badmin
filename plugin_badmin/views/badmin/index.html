@@ -21,7 +21,7 @@ function gopage(n){
 {{=filters}}
 {{colors=['blue','green','red','yellow','orange','purple']}}
 {{ccont=0}}
-<form>
+<form method="post">
 <table class="zebra-striped">
 <thead>
   <tr>
@@ -36,7 +36,7 @@ function gopage(n){
 {{count=(page-1)*50}}
 {{for d in data:}}
  <tr>
-   <td><input type="checkbox" name="delid" value="{{=d.id}}" /></td>
+   <td><input type="checkbox" name="rid" value="{{=d.id}}" /></td>
    {{count+=1}}
    <td>{{=count}}</td>
     {{for c in columns:}}
@@ -81,7 +81,9 @@ function gopage(n){
   </ul>
 </div>
 <div class="actions">
-  <input type="submit" value="{{=T('Delete')}}" class="btn danger" onclick="return confirm('{{=T('Are you shure?')}}')" />
-  <a href="{{=URL(f='edit',args=[table])}}" class="btn">{{=T('New')}}</a>
+  {{for a in actions:}}
+  <input type="submit" value="{{=a[0]}}" class="btn {{=a[2]}}" name="action" {{if a[3]:}}onclick="return confirm('{{=a[3]}}')"{{pass}} />
+  {{pass}}
+  <a href="{{=URL(f='edit',args=[table])}}" class="btn">{{=T('new')}}</a>
 </div>
 </form>
