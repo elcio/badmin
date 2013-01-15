@@ -9,7 +9,7 @@ if not 'badmin_tables' in globals():
 if not 'badmin_exclude_tables' in globals():
   badmin_exclude_tables=[]
 
-for table in db.keys():
+for table in db.tables:
   if not (table.startswith('_') or table in badmin_tables):
     if db[table] and not table in badmin_exclude_tables:
       if isinstance(db[table],db.Table):
@@ -25,6 +25,8 @@ for table,data in badmin_tables.iteritems():
       data['category']=table.split('_')[0]
     else:
       data['category']='othertables'
+  if not 'columns' in data:
+    data['columns']=db[table].fields[:]
 
 def mkfilter(table,column):
   '''Build filter HTML elements for the given column'''
@@ -54,6 +56,15 @@ def mkfilter(table,column):
           OPTION('Sim',_value='True'),
           OPTION('Não',_value='False'),
         _name=column,_id=column),_class='input'),
+      _class='clearfix')
+
+  if str(table[column].type).startswith('reference'):
+    s=SELECT(
+      *[OPTION(b,_value=a) for a,b in table[column].requires.options()],
+      _name=column,_id=column)
+    return DIV(
+        LABEL('%s: ' % table[column].label,_for=column),
+        DIV(s,_class='input'),
       _class='clearfix')
 
 def deleteRecords(dbtable,d):
@@ -102,6 +113,9 @@ def index():
         q &= dbtable[f]==True
       elif f in request.vars and request.vars[f]=='False':
         q &= (dbtable[f]==False)|(dbtable[f]==None)
+    if dbtable[f].type.startswith('reference'):
+      if f in request.vars and request.vars[f]:
+        q &= dbtable[f]==int(request.vars[f])
 
   o='id'
   if 'orderby' in request.vars:
